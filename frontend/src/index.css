@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* Basic global styles */
 body {
@@ -16,7 +14,7 @@ body {
   .btn-primary {
     @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors;
   }
-  
+
   .card {
     @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
   }

@@ -87,13 +87,37 @@ export const submitReport = async (req: AuthRequest, res: Response) => {
 
 export const getTeamReports = async (req: AuthRequest, res: Response) => {
   try {
-    const { weekStart, projectId, userId } = req.query;
+    const { weekStart, week, projectId, userId } = req.query;
 
     let query: any = {};
 
-    if (weekStart) {
-      query.weekStartDate = { $gte: new Date(weekStart as string) };
+    const selectedWeek = (weekStart as string) || (week as string);
+
+    if (selectedWeek) {
+      const normalized = selectedWeek.trim();
+
+      if (/^\d{4}-W\d{2}$/.test(normalized)) {
+        const [yearStr, weekStr] = normalized.split('-W');
+        const year = Number(yearStr);
+        const weekNumber = Number(weekStr);
+
+        const weekStartDate = new Date(Date.UTC(year, 0, 4));
+        const day = weekStartDate.getUTCDay() || 7;
+        weekStartDate.setUTCDate(weekStartDate.getUTCDate() + 1 - day);
+        weekStartDate.setUTCDate(weekStartDate.getUTCDate() + (weekNumber - 1) * 7);
+
+        const weekEndDate = new Date(weekStartDate);
+        weekEndDate.setUTCDate(weekEndDate.getUTCDate() + 6);
+
+        query.weekStartDate = { $gte: weekStartDate, $lte: weekEndDate };
+      } else {
+        const startDate = new Date(normalized);
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+        query.weekStartDate = { $gte: startDate, $lte: endDate };
+      }
     }
+
     if (projectId) query.project = projectId;
     if (userId) query.user = userId;
 

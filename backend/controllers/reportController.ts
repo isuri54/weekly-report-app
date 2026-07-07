@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import WeeklyReport from '../models/WeeklyReport';
+import WeeklyReport, { normalizeCompletedTasks } from '../models/WeeklyReport';
 import Project from '../models/Project';
 import { AuthRequest } from '../middleware/auth';
 import User from '../models/User';
@@ -12,7 +12,7 @@ export const createReport = async (req: AuthRequest, res: Response) => {
       user: req.user?._id,
       weekStartDate: new Date(weekStartDate),
       project,
-      tasksCompleted,
+      tasksCompleted: normalizeCompletedTasks(tasksCompleted),
       tasksPlanned,
       blockers,
       hoursWorked,
@@ -55,9 +55,16 @@ export const getReportById = async (req: AuthRequest, res: Response) => {
 
 export const updateReport = async (req: AuthRequest, res: Response) => {
   try {
+    const updatePayload = req.body.tasksCompleted === undefined
+      ? req.body
+      : {
+          ...req.body,
+          tasksCompleted: normalizeCompletedTasks(req.body.tasksCompleted)
+        };
+
     const report = await WeeklyReport.findOneAndUpdate(
       { _id: req.params.id, user: req.user?._id },
-      req.body,
+      updatePayload,
       { new: true }
     );
 

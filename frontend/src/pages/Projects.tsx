@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Plus, Edit2, Trash2, Users } from 'lucide-react';
 import api from '../utils/axios';
+import AIChat from '../components/AIChat';
 
 interface User {
   _id: string;
@@ -263,6 +264,7 @@ const Projects = () => {
           ))}
         </div>
       </div>
+      <AIChat />
     </div>
   );
 };

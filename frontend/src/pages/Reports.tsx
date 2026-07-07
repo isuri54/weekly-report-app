@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Plus, Edit3, Send, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
@@ -14,7 +13,7 @@ interface Report {
   _id: string;
   weekStartDate: string;
   project: Project;
-  tasksCompleted: string;
+  tasksCompleted: string[] | string;
   tasksPlanned: string;
   blockers?: string;
   hoursWorked?: number;
@@ -22,6 +21,27 @@ interface Report {
   status: 'DRAFT' | 'SUBMITTED';
   submittedAt?: string;
 }
+
+const normalizeCompletedTasks = (value: string) =>
+  value
+    .split(',')
+    .map((task) => task.trim())
+    .filter(Boolean);
+
+const formatCompletedTasksForDisplay = (tasksCompleted: string[] | string | undefined) => {
+  if (Array.isArray(tasksCompleted)) {
+    return tasksCompleted.filter((task) => typeof task === 'string' && task.trim().length > 0);
+  }
+
+  if (typeof tasksCompleted === 'string') {
+    return normalizeCompletedTasks(tasksCompleted);
+  }
+
+  return [];
+};
+
+const formatCompletedTasksForForm = (tasksCompleted: string[] | string | undefined) =>
+  formatCompletedTasksForDisplay(tasksCompleted).join(', ');
 
 const Reports = () => {
   const [reports, setReports] = useState<Report[]>([]);
@@ -82,7 +102,7 @@ const Reports = () => {
     setFormData({
       weekStartDate: report.weekStartDate.split('T')[0],
       project: report.project._id,
-      tasksCompleted: report.tasksCompleted,
+      tasksCompleted: formatCompletedTasksForForm(report.tasksCompleted),
       tasksPlanned: report.tasksPlanned,
       blockers: report.blockers || '',
       hoursWorked: report.hoursWorked?.toString() || '',
@@ -96,14 +116,20 @@ const Reports = () => {
     setLoading(true);
 
     try {
+      const payload = {
+        ...formData,
+        tasksCompleted: normalizeCompletedTasks(formData.tasksCompleted),
+        hoursWorked: formData.hoursWorked ? Number(formData.hoursWorked) : undefined
+      };
+
       if (editingReport) {
-        await api.put(`http://localhost:5000/api/reports/${editingReport._id}`, formData);
+        await api.put(`http://localhost:5000/api/reports/${editingReport._id}`, payload);
         toast.success('Report updated successfully');
       } else {
-        await api.post('http://localhost:5000/api/reports', formData);
+        await api.post('http://localhost:5000/api/reports', payload);
         toast.success('Report created successfully');
       }
-      
+
       fetchReports();
       resetForm();
     } catch (error: any) {
@@ -188,8 +214,9 @@ const Reports = () => {
                     required
                     rows={4}
                     className="w-full p-4 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 resize-y"
-                    placeholder="List the tasks you completed..."
+                    placeholder="Enter completed tasks separated by commas, e.g. API integration, bug fixes, testing"
                   />
+                  <p className="text-sm text-gray-500 mt-2">Separate each task with a comma so the team dashboard can count them accurately.</p>
                 </div>
 
                 <div>
@@ -284,7 +311,18 @@ const Reports = () => {
                 <div className="grid md:grid-cols-2 gap-8 text-gray-200">
                   <div>
                     <p className="uppercase text-xs tracking-widest text-blue-200 mb-2">Tasks Completed</p>
-                    <p className="leading-relaxed whitespace-pre-wrap">{report.tasksCompleted}</p>
+                    <ul className="space-y-2">
+                      {formatCompletedTasksForDisplay(report.tasksCompleted).length > 0 ? (
+                        formatCompletedTasksForDisplay(report.tasksCompleted).map((task, index) => (
+                          <li key={`${task}-${index}`} className="flex items-start gap-2">
+                            <span className="mt-2 h-2 w-2 rounded-full bg-emerald-400" />
+                            <span className="leading-relaxed">{task}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <p className="text-blue-100">No completed tasks recorded.</p>
+                      )}
+                    </ul>
                   </div>
                   <div>
                     <p className="uppercase text-xs tracking-widest text-blue-200 mb-2">Planned for Next Week</p>

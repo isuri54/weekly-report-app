@@ -5,6 +5,7 @@ import { Users, CheckCircle, AlertTriangle, Clock, FolderOpen } from 'lucide-rea
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import api from '../utils/axios';
+import AIChat from '../components/AIChat';
 
 const Dashboard = () => {
   const [teamReports, setTeamReports] = useState<any[]>([]);
@@ -47,7 +48,6 @@ const Dashboard = () => {
   }, [filters]);
 
   // Summary Stats
-  const totalReports = teamReports.length;
   const submitted = teamReports.filter(r => r.status === 'SUBMITTED').length;
   const totalTeamMembers = users.filter(user => user.role === 'MEMBER').length || 1;
 
@@ -96,6 +96,44 @@ const Dashboard = () => {
     name: p.name.length > 12 ? p.name.substring(0, 12) + '...' : p.name,
     count: teamReports.filter(r => r.project?._id === p._id).length
   }));
+
+  // Tasks Completed Trend Over Time (Dynamic - Last 4 Weeks)
+  const getTaskCount = (value: unknown) => {
+    if (Array.isArray(value)) {
+      return value.filter((task): task is string => typeof task === 'string' && task.trim().length > 0).length;
+    }
+
+    if (typeof value === 'string') {
+      return value
+        .split(',')
+        .map((task) => task.trim())
+        .filter(Boolean).length;
+    }
+
+    return 0;
+  };
+
+  const getTrendData = () => {
+    const sortedReports = [...teamReports].sort((a, b) => 
+      new Date(a.weekStartDate).getTime() - new Date(b.weekStartDate).getTime()
+    );
+
+    const weeklyTasks = sortedReports.reduce((acc: any, report) => {
+      const weekKey = format(new Date(report.weekStartDate), 'MMM dd');
+      if (!acc[weekKey]) acc[weekKey] = 0;
+
+      acc[weekKey] += getTaskCount(report.tasksCompleted);
+
+      return acc;
+    }, {});
+
+    return Object.entries(weeklyTasks).slice(-4).map(([week, tasks]) => ({
+      week,
+      tasks: Number(tasks)
+    }));
+  };
+
+  const trendData = getTrendData();
 
   if (loading) {
     return (
@@ -284,6 +322,18 @@ const Dashboard = () => {
           </div>
         </div>
 
+        <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 mt-8 mb-8">
+          <h3 className="text-xl font-semibold mb-6">Tasks Completed Trend (Last 4 Weeks)</h3>
+          <ResponsiveContainer width="100%" height={340}>
+            <BarChart data={trendData}>
+              <XAxis dataKey="week" stroke="#94a3b8" />
+              <YAxis stroke="#94a3b8" />
+              <Tooltip />
+              <Bar dataKey="tasks" fill="#60a5fa" radius={8} name="Tasks Completed" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
         <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
           <h3 className="text-xl font-semibold mb-6">Recent Reports</h3>
           <div className="overflow-x-auto">
@@ -316,6 +366,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      <AIChat />
     </div>
   );
 };

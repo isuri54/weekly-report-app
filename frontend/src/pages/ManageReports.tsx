@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
-import { Eye, X, Calendar, User, Briefcase } from 'lucide-react';
+import { Eye, X, Briefcase } from 'lucide-react';
 import api from '../utils/axios';
+import AIChat from '../components/AIChat';
 
 interface Report {
   _id: string;
   user: { _id: string; name: string; };
   project: { _id: string; name: string; };
   weekStartDate: string;
-  tasksCompleted: string;
+  tasksCompleted: string[] | string;
   tasksPlanned: string;
   blockers?: string;
   hoursWorked?: number;
@@ -18,6 +18,24 @@ interface Report {
   status: 'DRAFT' | 'SUBMITTED';
   submittedAt?: string;
 }
+
+const normalizeCompletedTasks = (value: string) =>
+  value
+    .split(',')
+    .map((task) => task.trim())
+    .filter(Boolean);
+
+const formatCompletedTasksForDisplay = (tasksCompleted: string[] | string | undefined) => {
+  if (Array.isArray(tasksCompleted)) {
+    return tasksCompleted.filter((task) => typeof task === 'string' && task.trim().length > 0);
+  }
+
+  if (typeof tasksCompleted === 'string') {
+    return normalizeCompletedTasks(tasksCompleted);
+  }
+
+  return [];
+};
 
 const ManageReports = () => {
   const [reports, setReports] = useState<Report[]>([]);
@@ -183,8 +201,19 @@ const ManageReports = () => {
 
               <div>
                 <h3 className="font-semibold text-lg mb-3">Tasks Completed This Week</h3>
-                <div className="bg-gray-50 p-6 rounded-2xl whitespace-pre-wrap leading-relaxed">
-                  {selectedReport.tasksCompleted}
+                <div className="bg-gray-50 p-6 rounded-2xl leading-relaxed">
+                  {formatCompletedTasksForDisplay(selectedReport.tasksCompleted).length > 0 ? (
+                    <ul className="space-y-2">
+                      {formatCompletedTasksForDisplay(selectedReport.tasksCompleted).map((task, index) => (
+                        <li key={`${task}-${index}`} className="flex items-start gap-2">
+                          <span className="mt-2 h-2 w-2 rounded-full bg-blue-600" />
+                          <span>{task}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500">No completed tasks recorded.</p>
+                  )}
                 </div>
               </div>
 
@@ -223,6 +252,7 @@ const ManageReports = () => {
           </div>
         </div>
       )}
+      <AIChat />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import connectDB from './config/db';
 import authRoutes from './routes/authRoutes';
 import reportRoutes from './routes/reportRoutes';
 import projectRoutes from './routes/projectRoutes';
+import aiRoutes from './routes/aiRoutes';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Test Route
 app.get('/', (req, res) => {

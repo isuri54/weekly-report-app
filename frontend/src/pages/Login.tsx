@@ -37,7 +37,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-blue-300 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#0A2540] flex items-center justify-center p-6">
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex min-h-[640px]">
         
         <div className="hidden lg:flex w-5/12 bg-gradient-to-br from-[#0A2540] via-[#1E3A8A] to-[#3B82F6] p-12 flex-col justify-between text-white relative">

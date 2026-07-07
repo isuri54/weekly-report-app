@@ -3,6 +3,10 @@ import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ProtectedRoute from './components/ProtectedRoute';
+import Reports from './pages/Reports';
+import ManagerDashboard from './pages/ManagerDashboard';
+import Projects from './pages/Projects';
+import ManageReports from './pages/ManageReports';
 
 function App() {
   return (
@@ -13,27 +17,42 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         {/* Protected Routes */}
-        <Route 
-          path="/reports" 
+        <Route
+          path="/reports"
           element={
             <ProtectedRoute>
-              <div>Personal Reports Page (Coming Soon)</div>
+              <Reports />
             </ProtectedRoute>
-          } 
-        />
-        
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute allowedRoles={['MANAGER']}>
-              <div>Manager Dashboard (Coming Soon)</div>
-            </ProtectedRoute>
-          } 
+          }
         />
 
-        {/* Redirect root to login */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={['MANAGER']}>
+              <ManagerDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute allowedRoles={['MANAGER']}>
+              <Projects />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/manage-reports"
+          element={
+            <ProtectedRoute allowedRoles={['MANAGER']}>
+              <ManageReports />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Catch all */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

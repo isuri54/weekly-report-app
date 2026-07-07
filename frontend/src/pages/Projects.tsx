@@ -1,17 +1,25 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Users } from 'lucide-react';
 import api from '../utils/axios';
+
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+}
 
 interface Project {
   _id: string;
   name: string;
   description?: string;
   color?: string;
+  assignedMembers?: User[];
 }
 
 const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [allMembers, setAllMembers] = useState<User[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
@@ -19,7 +27,8 @@ const Projects = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    color: '#3b82f6'
+    color: '#3b82f6',
+    assignedMemberIds: [] as string[]
   });
 
   const fetchProjects = async () => {
@@ -31,12 +40,22 @@ const Projects = () => {
     }
   };
 
+  const fetchMembers = async () => {
+    try {
+      const { data } = await api.get('/reports/users'); // or /users
+      setAllMembers(data.filter((u: any) => u.role === 'MEMBER'));
+    } catch (error) {
+      console.log("Could not load members");
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
+    fetchMembers();
   }, []);
 
   const resetForm = () => {
-    setFormData({ name: '', description: '', color: '#3b82f6' });
+    setFormData({ name: '', description: '', color: '#3b82f6', assignedMemberIds: [] });
     setEditingProject(null);
     setShowForm(false);
   };
@@ -46,13 +65,21 @@ const Projects = () => {
     setLoading(true);
 
     try {
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        color: formData.color,
+        assignedMembers: formData.assignedMemberIds
+      };
+
       if (editingProject) {
-        await api.put(`/projects/${editingProject._id}`, formData);
-        toast.success('Project updated');
+        await api.put(`/projects/${editingProject._id}`, payload);
+        toast.success('Project updated successfully');
       } else {
-        await api.post('/projects', formData);
-        toast.success('Project created');
+        await api.post('/projects', payload);
+        toast.success('Project created successfully');
       }
+      
       fetchProjects();
       resetForm();
     } catch (error: any) {
@@ -67,7 +94,8 @@ const Projects = () => {
     setFormData({
       name: project.name,
       description: project.description || '',
-      color: project.color || '#3b82f6'
+      color: project.color || '#3b82f6',
+      assignedMemberIds: project.assignedMembers?.map(m => m._id) || [] || []
     });
     setShowForm(true);
   };
@@ -82,6 +110,15 @@ const Projects = () => {
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Cannot delete project that is in use');
     }
+  };
+
+  const toggleMember = (memberId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      assignedMemberIds: prev.assignedMemberIds.includes(memberId)
+        ? prev.assignedMemberIds.filter(id => id !== memberId)
+        : [...prev.assignedMemberIds, memberId]
+    }));
   };
 
   return (
@@ -142,6 +179,31 @@ const Projects = () => {
                     />
                   </div>
 
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+                      <Users size={18} /> Assign Team Members (Optional)
+                    </label>
+                    <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-2xl p-3 space-y-2">
+                      {allMembers.map(member => (
+                        <label 
+                          key={member._id}
+                          className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={formData.assignedMemberIds.includes(member._id)}
+                            onChange={() => toggleMember(member._id)}
+                            className="w-5 h-5 accent-blue-600"
+                          />
+                          <div>
+                            <p className="font-medium">{member.name}</p>
+                            <p className="text-sm text-gray-500">{member.email}</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="flex gap-4 pt-4">
                     <button type="button" onClick={resetForm} className="flex-1 py-4 border rounded-2xl">Cancel</button>
                     <button type="submit" disabled={loading} className="flex-1 bg-[#0A2540] text-white py-4 rounded-2xl font-semibold">
@@ -169,6 +231,19 @@ const Projects = () => {
                   </div>
                 </div>
               </div>
+
+              {project.assignedMembers && project.assignedMembers.length > 0 && (
+                <div className="mt-6">
+                  <p className="text-xs text-blue-200 mb-2">ASSIGNED MEMBERS ({project.assignedMembers.length})</p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.assignedMembers.slice(0, 4).map((member: User) => (
+                      <span key={member._id} className="text-xs bg-white/10 px-3 py-1 rounded-full">
+                        {member.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="flex gap-3 mt-8 opacity-0 group-hover:opacity-100 transition-all">
                 <button

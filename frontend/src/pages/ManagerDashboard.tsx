@@ -49,15 +49,47 @@ const Dashboard = () => {
   // Summary Stats
   const totalReports = teamReports.length;
   const submitted = teamReports.filter(r => r.status === 'SUBMITTED').length;
-  const pending = totalReports - submitted;
-  const complianceRate = totalReports ? Math.round((submitted / totalReports) * 100) : 0;
+  const totalTeamMembers = users.filter(user => user.role === 'MEMBER').length || 1;
+
+  const membersWhoSubmitted = new Set(
+    teamReports
+      .filter(r => r.status === 'SUBMITTED' && r.user?.role === 'MEMBER')
+      .map(r => r.user?._id)
+  ).size;
+  const membersPending = totalTeamMembers - membersWhoSubmitted;
+  const complianceRate = Math.round((membersWhoSubmitted / totalTeamMembers) * 100);
 
   const openBlockers = teamReports.filter(r => r.blockers && r.blockers.length > 5).length;
+
+  // Per Member Submission Status
+  const memberStatus = users
+    .filter(user => user.role === 'MEMBER')
+    .map(user => {
+      const userReports = teamReports.filter(r => r.user?._id === user._id);
+      const submittedCount = userReports.filter(r => r.status === 'SUBMITTED').length;
+      
+      const lateCount = userReports.filter(r => {
+        const submittedDate = r.submittedAt ? new Date(r.submittedAt) : null;
+        const weekStart = new Date(r.weekStartDate);
+        return submittedDate && (submittedDate.getTime() - weekStart.getTime()) > 3 * 24 * 60 * 60 * 1000;
+      }).length;
+
+      // If member has 0 reports for the selected week, Pending = 1
+      const pending = userReports.length === 0 ? 1 : (userReports.length - submittedCount);
+
+      return {
+        ...user,
+        total: userReports.length || 1, 
+        submitted: submittedCount,
+        pending: pending,
+        late: lateCount
+      };
+    });
 
   // Chart Data
   const statusData = [
     { name: 'Submitted', value: submitted, color: '#22c55e' },
-    { name: 'Pending', value: pending, color: '#eab308' }
+    { name: 'Pending', value: membersPending, color: '#eab308' }
   ];
 
   const projectData = projects.map(p => ({
@@ -85,6 +117,13 @@ const Dashboard = () => {
             <p className="text-blue-100">Real-time team performance overview</p>
           </div>
           <div className="flex items-center gap-4">
+            <Link
+              to="/manage-reports"
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 px-5 py-3 rounded-2xl transition-all"
+            >
+              <FolderOpen size={20} />
+              Manage Reports
+            </Link>
             <Link
               to="/projects"
               className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 px-5 py-3 rounded-2xl transition-all"
@@ -114,7 +153,7 @@ const Dashboard = () => {
               <Clock className="text-yellow-400" size={32} />
               <div>
                 <p className="text-blue-200 text-sm">Pending</p>
-                <p className="text-5xl font-semibold mt-1">{pending}</p>
+                <p className="text-5xl font-semibold mt-1">{membersPending}</p>
               </div>
             </div>
           </div>
@@ -153,18 +192,20 @@ const Dashboard = () => {
             className="bg-[#1E3A8A] border border-white/30 rounded-2xl px-5 py-3 text-white focus:outline-none focus:border-blue-400 appearance-none"
         >
             <option value="" className="bg-[#0A2540] text-white">All Members</option>
-            {users.map((user) => (
-            <option 
-                key={user._id} 
-                value={user._id}
-                className="bg-[#0A2540] text-white"
-            >
-                {user.name} ({user.role})
-            </option>
-            ))}
+            {users
+              .filter(user => user.role === 'MEMBER')
+              .map((user) => (
+                <option 
+                  key={user._id} 
+                  value={user._id}
+                  className="bg-[#0A2540] text-white"
+                >
+                  {user.name}
+                </option>
+              ))
+            }
         </select>
 
-        {/* Projects Dropdown */}
         <select 
             value={filters.projectId}
             onChange={(e) => setFilters({...filters, projectId: e.target.value})}
@@ -181,6 +222,38 @@ const Dashboard = () => {
             </option>
             ))}
         </select>
+        </div>
+
+        <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 mb-8">
+          <h3 className="text-xl font-semibold mb-6">Submission Status per Team Member</h3>
+          <div className="overflow-x-auto max-h-[420px] overflow-y-auto">
+            <table className="w-full">
+              <thead className="sticky top-0  z-10">
+                <tr className="border-b border-white/10 text-blue-200 text-sm">
+                  <th className="pb-4 text-left">Team Member</th>
+                  <th className="pb-4 text-center">Total Reports</th>
+                  <th className="pb-4 text-center">Submitted</th>
+                  <th className="pb-4 text-center">Pending</th>
+                  <th className="pb-4 text-center">Late</th>
+                  <th className="pb-4 text-center">Compliance</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-200">
+                {memberStatus.map(member => (
+                  <tr key={member._id} className="border-b border-white/10 hover:bg-white/5">
+                    <td className="py-5 font-medium">{member.name}</td>
+                    <td className="py-5 text-center">{member.total}</td>
+                    <td className="py-5 text-center text-emerald-400 font-medium">{member.submitted}</td>
+                    <td className="py-5 text-center text-yellow-400 font-medium">{member.pending}</td>
+                    <td className="py-5 text-center text-orange-400 font-medium">{member.late}</td>
+                    <td className="py-5 text-center font-semibold">
+                      {member.total ? Math.round((member.submitted / member.total) * 100) : 0}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">

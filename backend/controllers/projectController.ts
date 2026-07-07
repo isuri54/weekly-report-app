@@ -4,11 +4,19 @@ import { AuthRequest } from '../middleware/auth';
 
 export const createProject = async (req: AuthRequest, res: Response) => {
   try {
+    const { name, description, color, assignedMembers } = req.body;
+
     const project = await Project.create({
-      ...req.body,
+      name,
+      description,
+      color,
+      assignedMembers: assignedMembers || [],
       createdBy: req.user?._id
     });
-    res.status(201).json(project);
+
+    // Populate assigned members before sending response
+    const populatedProject = await Project.findById(project._id).populate('assignedMembers', 'name email');
+    res.status(201).json(populatedProject);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -16,7 +24,9 @@ export const createProject = async (req: AuthRequest, res: Response) => {
 
 export const getAllProjects = async (req: Request, res: Response) => {
   try {
-    const projects = await Project.find().sort({ name: 1 });
+    const projects = await Project.find()
+    .populate('assignedMembers', 'name email')
+    .sort({ name: 1 });
     res.json(projects);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -25,7 +35,21 @@ export const getAllProjects = async (req: Request, res: Response) => {
 
 export const updateProject = async (req: Request, res: Response) => {
   try {
-    const project = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { name, description, color, assignedMembers } = req.body;
+
+    const project = await Project.findByIdAndUpdate(
+      req.params.id,
+      { 
+        name, 
+        description, 
+        color, 
+        assignedMembers: assignedMembers || [] 
+      },
+      { new: true }
+    ).populate('assignedMembers', 'name email');
+
+    if (!project) return res.status(404).json({ message: 'Project not found' });
+
     res.json(project);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

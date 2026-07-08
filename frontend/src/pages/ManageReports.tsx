@@ -137,7 +137,7 @@ const ManageReports = () => {
                   <tr className="border-b border-white/10 text-left text-blue-200 text-sm">
                     <th className="pb-4">Member</th>
                     <th className="pb-4">Project</th>
-                    <th className="pb-4">Week</th>
+                    <th className="pb-4">Week End Date</th>
                     <th className="pb-4">Status</th>
                     <th className="pb-4">Action</th>
                   </tr>

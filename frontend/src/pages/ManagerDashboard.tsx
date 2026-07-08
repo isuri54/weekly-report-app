@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Users, CheckCircle, AlertTriangle, Clock, FolderOpen } from 'lucide-react';
+import { Users, CheckCircle, AlertTriangle, Clock, FolderOpen, LogOut } from 'lucide-react';
 import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/axios';
 import AIChat from '../components/AIChat';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [teamReports, setTeamReports] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -155,6 +156,12 @@ const Dashboard = () => {
 
   const trendData = getTrendData();
 
+  const handleLogout = () => {
+    localStorage.removeItem('userInfo');
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A2540] text-white p-8 flex items-center justify-center">
@@ -189,6 +196,13 @@ const Dashboard = () => {
               <FolderOpen size={20} />
               Manage Projects
             </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-400/30 px-5 py-3 rounded-2xl transition-all text-red-200"
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
             <div className="text-sm text-blue-300">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </div>

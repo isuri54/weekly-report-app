@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Plus, Edit3, Send, Calendar } from 'lucide-react';
+import { Plus, Edit3, Send, Calendar, LogOut } from 'lucide-react';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import api from '../utils/axios';
 
 interface Project {
@@ -44,6 +45,7 @@ const formatCompletedTasksForForm = (tasksCompleted: string[] | string | undefin
   formatCompletedTasksForDisplay(tasksCompleted).join(', ');
 
 const Reports = () => {
+  const navigate = useNavigate();
   const [reports, setReports] = useState<Report[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -149,6 +151,12 @@ const Reports = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('userInfo');
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
+
   return (
     <div className="min-h-screen bg-[#0A2540] text-white pb-12">
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -157,13 +165,22 @@ const Reports = () => {
             <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">My Weekly Reports</h1>
             <p className="text-blue-100 mt-2">Document your progress and plan ahead</p>
           </div>
-          <button
-            onClick={() => setShowForm(true)}
-            className="flex items-center justify-center gap-3 bg-white text-[#0A2540] px-6 py-3.5 rounded-2xl font-semibold hover:bg-white/90 transition-all w-full sm:w-auto"
-          >
-            <Plus size={22} />
-            New Weekly Report
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 border border-red-400/30 px-5 py-3.5 rounded-2xl font-semibold text-red-200 transition-all"
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center justify-center gap-3 bg-white text-[#0A2540] px-6 py-3.5 rounded-2xl font-semibold hover:bg-white/90 transition-all w-full sm:w-auto"
+            >
+              <Plus size={22} />
+              New Weekly Report
+            </button>
+          </div>
         </div>
 
         {showForm && (

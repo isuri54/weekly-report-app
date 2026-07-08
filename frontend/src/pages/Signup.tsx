@@ -97,7 +97,7 @@ const Signup = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -113,7 +113,7 @@ const Signup = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
                     placeholder="you@company.com"
                   />
                 </div>
@@ -161,7 +161,7 @@ const Signup = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
                     placeholder="Create a strong password"
                   />
                   <button
@@ -182,7 +182,7 @@ const Signup = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
                   placeholder="Confirm your password"
                 />
                 <button

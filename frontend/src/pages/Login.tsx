@@ -80,7 +80,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
                     placeholder="you@company.com"
                   />
                 </div>
@@ -95,7 +95,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pl-11 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
+                    className="w-full pl-11 pr-12 py-3.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
                     placeholder="••••••••"
                   />
                   <button

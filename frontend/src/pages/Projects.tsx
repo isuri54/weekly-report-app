@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Plus, Edit2, Trash2, Users } from 'lucide-react';
+import { Plus, Edit2, Trash2, Users, X } from 'lucide-react';
 import api from '../utils/axios';
 import AIChat from '../components/AIChat';
 
@@ -140,13 +140,24 @@ const Projects = () => {
         </div>
 
         {showForm && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-            <div className="bg-white text-gray-900 rounded-3xl w-full max-w-md">
-              <div className="p-8">
-                <h2 className="text-2xl font-semibold mb-6">
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div className="bg-white text-gray-900 rounded-3xl w-full max-w-lg max-h-[85vh] overflow-hidden flex flex-col">
+              
+              <div className="p-8 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="text-2xl font-semibold">
                   {editingProject ? 'Edit Project' : 'Create New Project'}
                 </h2>
+                <button 
+                  type="button" 
+                  onClick={resetForm} 
+                  className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-50 focus:outline-none"
+                  aria-label="Close modal"
+                >
+                  <X size={24} />
+                </button>
+              </div>
 
+              <div className="flex-1 p-8 overflow-y-auto">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
@@ -205,10 +216,10 @@ const Projects = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-4 pt-4">
-                    <button type="button" onClick={resetForm} className="flex-1 py-4 border rounded-2xl">Cancel</button>
+                  <div className="flex gap-4 pt-6 border-t">
+                    <button type="button" onClick={resetForm} className="flex-1 py-4 border border-gray-300 rounded-2xl font-medium">Cancel</button>
                     <button type="submit" disabled={loading} className="flex-1 bg-[#0A2540] text-white py-4 rounded-2xl font-semibold">
-                      {loading ? 'Saving...' : editingProject ? 'Update' : 'Create'}
+                      {loading ? 'Saving...' : editingProject ? 'Update Project' : 'Create Project'}
                     </button>
                   </div>
                 </form>

@@ -185,13 +185,6 @@ const Signup = () => {
                   className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 text-gray-400 rounded-2xl focus:outline-none focus:border-blue-500 transition-all"
                   placeholder="Confirm your password"
                 />
-                <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
               </div>
 
               <button

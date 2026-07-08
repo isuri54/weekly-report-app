@@ -195,13 +195,13 @@ const Reports = () => {
               <form onSubmit={handleSubmit} className="p-8 space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Week Starting Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Week Ending Date</label>
                     <input
                       type="date"
                       value={formData.weekStartDate}
                       onChange={(e) => setFormData({ ...formData, weekStartDate: e.target.value })}
                       required
-                      className="w-full p-4 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500"
+                      className="w-full p-4 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white text-gray-900 scheme-light"
                     />
                   </div>
 
@@ -266,7 +266,7 @@ const Reports = () => {
                       type="number"
                       value={formData.hoursWorked}
                       onChange={(e) => setFormData({ ...formData, hoursWorked: e.target.value })}
-                      className="w-full p-4 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500"
+                      className="w-full p-4 border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white text-gray-900"
                       placeholder="e.g. 38"
                     />
                   </div>

@@ -167,14 +167,14 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A2540] text-white p-8">
+    <div className="min-h-screen bg-[#0A2540] text-white p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-8 sm:mb-10">
           <div>
-            <h1 className="text-4xl font-semibold">Team Dashboard</h1>
+            <h1 className="text-3xl sm:text-4xl font-semibold">Team Dashboard</h1>
             <p className="text-blue-100">Real-time team performance overview</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3">
             <Link
               to="/manage-reports"
               className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 px-5 py-3 rounded-2xl transition-all"
@@ -195,11 +195,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-10 flex flex-wrap gap-4">
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-6 mb-8 sm:mb-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         <input 
             type="week" 
             onChange={(e) => setFilters({...filters, week: e.target.value})}
-            className="bg-[#1E3A8A] border border-white/30 rounded-2xl px-5 py-3 text-white focus:outline-none focus:border-blue-400"
+            className="w-full bg-[#1E3A8A] border border-white/30 rounded-2xl px-5 py-3 text-white focus:outline-none focus:border-blue-400"
         />
         
         <select 
@@ -240,13 +240,13 @@ const Dashboard = () => {
         </select>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
+          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-6 sm:p-8">
             <div className="flex items-center gap-4">
               <CheckCircle className="text-emerald-400" size={32} />
               <div>
                 <p className="text-blue-200 text-sm">Submitted</p>
-                <p className="text-5xl font-semibold mt-1">{submitted}</p>
+                <p className="text-3xl sm:text-5xl font-semibold mt-1">{submitted}</p>
               </div>
             </div>
           </div>
@@ -256,7 +256,7 @@ const Dashboard = () => {
               <Clock className="text-yellow-400" size={32} />
               <div>
                 <p className="text-blue-200 text-sm">Pending</p>
-                <p className="text-5xl font-semibold mt-1">{membersPending}</p>
+                <p className="text-3xl sm:text-5xl font-semibold mt-1">{membersPending}</p>
               </div>
             </div>
           </div>
@@ -266,7 +266,7 @@ const Dashboard = () => {
               <Users className="text-blue-400" size={32} />
               <div>
                 <p className="text-blue-200 text-sm">Compliance Rate</p>
-                <p className="text-5xl font-semibold mt-1">{complianceRate}%</p>
+                <p className="text-3xl sm:text-5xl font-semibold mt-1">{complianceRate}%</p>
                 <p className="text-xs text-blue-300 mt-1">
                   {membersWhoSubmitted} of {totalTeamMembers} members
                 </p>
@@ -279,7 +279,7 @@ const Dashboard = () => {
               <AlertTriangle className="text-red-400" size={32} />
               <div>
                 <p className="text-blue-200 text-sm">Open Blockers</p>
-                <p className="text-5xl font-semibold mt-1 text-red-400">{openBlockers}</p>
+                <p className="text-3xl sm:text-5xl font-semibold mt-1 text-red-400">{openBlockers}</p>
               </div>
             </div>
           </div>
@@ -287,11 +287,11 @@ const Dashboard = () => {
 
         
 
-        <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 mb-8">
+        <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-5 sm:p-8 mb-8">
           <h3 className="text-xl font-semibold mb-6">Submission Status per Team Member</h3>
           
           <div className="overflow-x-auto max-h-[292px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-            <table className="w-full border-collapse">
+            <table className="w-full min-w-[640px] border-collapse">
               <thead className="sticky top-0 z-10">
                 <tr className="border-b border-white/10 text-blue-200 text-sm ">
                   <th className="pb-4 text-left">Team Member</th>
@@ -320,8 +320,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
+          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-5 sm:p-8">
             <h3 className="text-xl font-semibold mb-6">Submission Status</h3>
             <ResponsiveContainer width="100%" height={320}>
               <PieChart>
@@ -348,7 +348,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 mt-8 mb-8">
+        <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-5 sm:p-8 mt-6 sm:mt-8 mb-8">
           <h3 className="text-xl font-semibold mb-6">Tasks Completed Trend (Last 4 Weeks)</h3>
           <ResponsiveContainer width="100%" height={340}>
             <BarChart data={trendData}>

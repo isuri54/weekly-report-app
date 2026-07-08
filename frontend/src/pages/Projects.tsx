@@ -123,16 +123,16 @@ const Projects = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A2540] text-white p-8">
+    <div className="min-h-screen bg-[#0A2540] text-white p-4 sm:p-6 lg:p-8">
       <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8 sm:mb-10">
           <div>
-            <h1 className="text-4xl font-semibold">Projects & Categories</h1>
+            <h1 className="text-3xl sm:text-4xl font-semibold">Projects & Categories</h1>
             <p className="text-blue-100 mt-2">Manage work categories used in reports</p>
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-3 bg-white text-[#0A2540] px-6 py-3 rounded-2xl font-semibold hover:bg-white/90"
+            className="flex items-center justify-center gap-3 bg-white text-[#0A2540] px-6 py-3 rounded-2xl font-semibold hover:bg-white/90 w-full sm:w-auto"
           >
             <Plus size={22} />
             New Project
@@ -228,9 +228,9 @@ const Projects = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
           {projects.map((project) => (
-            <div key={project._id} className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 group">
+            <div key={project._id} className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-5 sm:p-8 group">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
                   <div 
@@ -257,7 +257,7 @@ const Projects = () => {
                 </div>
               )}
 
-              <div className="flex gap-3 mt-8 opacity-0 group-hover:opacity-100 transition-all">
+              <div className="flex flex-col sm:flex-row gap-3 mt-8 sm:opacity-0 sm:group-hover:opacity-100 transition-all">
                 <button
                   onClick={() => handleEdit(project)}
                   className="flex-1 flex items-center justify-center gap-2 py-3 bg-white/10 hover:bg-white/20 rounded-2xl transition-all"

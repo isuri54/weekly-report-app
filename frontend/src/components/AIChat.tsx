@@ -38,14 +38,14 @@ const AIChat = () => {
     <>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-xl z-50 flex items-center gap-2"
+        className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-xl z-50 flex items-center gap-2"
       >
         <Bot size={24} />
         AI Assistant
       </button>
 
       {isOpen && (
-        <div className="fixed bottom-24 right-8 w-96 bg-white rounded-3xl shadow-2xl z-50 flex flex-col h-[520px]">
+        <div className="fixed bottom-20 right-4 left-4 sm:left-auto sm:right-8 w-[calc(100vw-2rem)] sm:w-96 bg-white rounded-3xl shadow-2xl z-50 flex flex-col h-[520px] max-h-[calc(100vh-6rem)]">
           <div className="bg-[#0A2540] text-white p-4 rounded-t-3xl flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Bot className="text-blue-400" />

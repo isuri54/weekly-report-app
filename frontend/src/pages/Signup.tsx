@@ -53,8 +53,8 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A2540] flex items-center justify-center p-6">
-      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden flex min-h-[640px]">
+    <div className="min-h-screen bg-[#0A2540] flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-5xl bg-white rounded-[28px] shadow-2xl overflow-hidden flex flex-col lg:flex-row min-h-[640px]">
         
         <div className="hidden lg:flex w-5/12 bg-gradient-to-br from-[#0A2540] via-[#1E3A8A] to-[#3B82F6] p-12 flex-col justify-between text-white relative">
           <div>
@@ -79,10 +79,10 @@ const Signup = () => {
           </div>
         </div>
 
-        <div className="flex-1 p-10 lg:p-16 flex flex-col justify-center">
+        <div className="flex-1 p-6 sm:p-8 lg:p-10 xl:p-16 flex flex-col justify-center">
           <div className="max-w-md mx-auto w-full">
-            <div className="mb-10">
-              <h1 className="text-4xl font-semibold text-gray-900 mb-2">Create Account</h1>
+            <div className="mb-8 sm:mb-10">
+              <h1 className="text-3xl sm:text-4xl font-semibold text-gray-900 mb-2">Create Account</h1>
               <p className="text-gray-600">Join the team and start tracking your work</p>
             </div>
 

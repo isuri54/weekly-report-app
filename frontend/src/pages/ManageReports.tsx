@@ -82,20 +82,20 @@ const ManageReports = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A2540] text-white p-8">
+    <div className="min-h-screen bg-[#0A2540] text-white p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8 sm:mb-10">
           <div>
-            <h1 className="text-4xl font-semibold">Manage Reports</h1>
+            <h1 className="text-3xl sm:text-4xl font-semibold">Manage Reports</h1>
             <p className="text-blue-100">View and analyze all team reports</p>
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-10 flex flex-wrap gap-4">
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-6 mb-8 sm:mb-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           <input 
             type="week" 
             onChange={(e) => setFilters({...filters, week: e.target.value})}
-            className="bg-[#1E3A8A] border border-white/30 rounded-2xl px-5 py-3 text-white focus:outline-none focus:border-blue-400"
+            className="w-full bg-[#1E3A8A] border border-white/30 rounded-2xl px-5 py-3 text-white focus:outline-none focus:border-blue-400"
           />
           
           <select 
@@ -123,7 +123,7 @@ const ManageReports = () => {
           </select>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
+        <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-5 sm:p-8">
           <h3 className="text-xl font-semibold mb-6">All Team Reports</h3>
 
           {loading ? (
@@ -131,8 +131,9 @@ const ManageReports = () => {
           ) : reports.length === 0 ? (
             <div className="text-center py-20 text-blue-100">No reports found for the selected filters.</div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-full">
+            <>
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full min-w-full">
                 <thead>
                   <tr className="border-b border-white/10 text-left text-blue-200 text-sm">
                     <th className="pb-4">Member</th>
@@ -168,8 +169,34 @@ const ManageReports = () => {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+                </table>
+              </div>
+
+              <div className="space-y-4 md:hidden">
+                {reports.map((report) => (
+                  <div key={report._id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold">{report.user?.name}</p>
+                        <p className="text-sm text-blue-100">{report.project?.name}</p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${report.status === 'SUBMITTED' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                        {report.status}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-sm text-blue-100">
+                      {format(new Date(report.weekStartDate), 'MMM dd, yyyy')}
+                    </p>
+                    <button
+                      onClick={() => openReport(report)}
+                      className="mt-4 flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      <Eye size={18} /> View Full Report
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>

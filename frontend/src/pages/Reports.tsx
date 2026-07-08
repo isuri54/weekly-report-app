@@ -151,15 +151,15 @@ const Reports = () => {
 
   return (
     <div className="min-h-screen bg-[#0A2540] text-white pb-12">
-      <div className="max-w-6xl mx-auto p-8">
-        <div className="flex justify-between items-center mb-10">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-8 sm:mb-10">
           <div>
-            <h1 className="text-4xl font-semibold tracking-tight">My Weekly Reports</h1>
+            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">My Weekly Reports</h1>
             <p className="text-blue-100 mt-2">Document your progress and plan ahead</p>
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-3 bg-white text-[#0A2540] px-6 py-3.5 rounded-2xl font-semibold hover:bg-white/90 transition-all"
+            className="flex items-center justify-center gap-3 bg-white text-[#0A2540] px-6 py-3.5 rounded-2xl font-semibold hover:bg-white/90 transition-all w-full sm:w-auto"
           >
             <Plus size={22} />
             New Weekly Report
@@ -294,8 +294,8 @@ const Reports = () => {
             </div>
           ) : (
             reports.map((report) => (
-              <div key={report._id} className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
-                <div className="flex justify-between items-start mb-6">
+              <div key={report._id} className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-5 sm:p-8">
+                <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start mb-6">
                   <div>
                     <div className="flex items-center gap-3 text-blue-300 text-sm">
                       <Calendar size={18} />
@@ -337,10 +337,10 @@ const Reports = () => {
                   </div>
                 )}
 
-                <div className="flex gap-4 mt-8 pt-6 border-t border-white/10">
+                <div className="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t border-white/10">
                   <button
                     onClick={() => handleEdit(report)}
-                    className="flex items-center gap-2 px-5 py-2.5 text-blue-400 hover:text-blue-300 hover:bg-white/5 rounded-2xl transition-all"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 text-blue-400 hover:text-blue-300 hover:bg-white/5 rounded-2xl transition-all"
                   >
                     <Edit3 size={18} /> Edit
                   </button>
@@ -348,7 +348,7 @@ const Reports = () => {
                   {report.status === 'DRAFT' && (
                     <button
                       onClick={() => submitReport(report._id)}
-                      className="flex items-center gap-2 px-5 py-2.5 text-emerald-400 hover:text-emerald-300 hover:bg-white/5 rounded-2xl transition-all"
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 text-emerald-400 hover:text-emerald-300 hover:bg-white/5 rounded-2xl transition-all"
                     >
                       <Send size={18} /> Submit Report
                     </button>

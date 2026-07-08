@@ -48,24 +48,41 @@ const Dashboard = () => {
   }, [filters]);
 
   // Summary Stats
-  const submitted = teamReports.filter(r => r.status === 'SUBMITTED').length;
-  const totalTeamMembers = users.filter(user => user.role === 'MEMBER').length || 1;
+  const filteredReports = teamReports;
 
-  const membersWhoSubmitted = new Set(
-    teamReports
+  const submitted = filteredReports.filter(r => r.status === 'SUBMITTED').length;
+
+  let totalTeamMembers = users.filter(user => user.role === 'MEMBER').length || 1;
+  let membersWhoSubmitted = new Set(
+    filteredReports
       .filter(r => r.status === 'SUBMITTED' && r.user?.role === 'MEMBER')
       .map(r => r.user?._id)
   ).size;
-  const membersPending = totalTeamMembers - membersWhoSubmitted;
-  const complianceRate = Math.round((membersWhoSubmitted / totalTeamMembers) * 100);
 
-  const openBlockers = teamReports.filter(r => r.blockers && r.blockers.length > 5).length;
+  let membersPending = totalTeamMembers - membersWhoSubmitted;
+  let complianceRate = Math.round((membersWhoSubmitted / totalTeamMembers) * 100);
 
-  // Per Member Submission Status
+  const openBlockers = filteredReports.filter(r => r.blockers?.trim()).length;
+
+  // Override for single user filter
+  if (filters.userId) {
+    const selectedUser = users.find(u => u._id === filters.userId);
+    if (selectedUser && selectedUser.role === 'MEMBER') {
+      const userReports = filteredReports.filter(r => r.user?._id === filters.userId);
+      const userSubmitted = userReports.filter(r => r.status === 'SUBMITTED').length;
+
+      totalTeamMembers = 1;
+      membersWhoSubmitted = userSubmitted;
+      membersPending = userReports.length === 0 ? 1 : (userReports.length - userSubmitted);
+      complianceRate = userReports.length > 0 ? Math.round((userSubmitted / userReports.length) * 100) : 0;
+    }
+  }
+
+  // Per Member Submission Status - Dynamic
   const memberStatus = users
     .filter(user => user.role === 'MEMBER')
     .map(user => {
-      const userReports = teamReports.filter(r => r.user?._id === user._id);
+      const userReports = filteredReports.filter(r => r.user?._id === user._id);
       const submittedCount = userReports.filter(r => r.status === 'SUBMITTED').length;
       
       const lateCount = userReports.filter(r => {
@@ -74,7 +91,6 @@ const Dashboard = () => {
         return submittedDate && (submittedDate.getTime() - weekStart.getTime()) > 3 * 24 * 60 * 60 * 1000;
       }).length;
 
-      // If member has 0 reports for the selected week, Pending = 1
       const pending = userReports.length === 0 ? 1 : (userReports.length - submittedCount);
 
       return {
@@ -85,6 +101,10 @@ const Dashboard = () => {
         late: lateCount
       };
     });
+
+  const displayedMemberStatus = filters.userId 
+  ? memberStatus.filter(m => m._id === filters.userId)
+  : memberStatus;
 
   // Chart Data
   const statusData = [
@@ -175,48 +195,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
-            <div className="flex items-center gap-4">
-              <CheckCircle className="text-emerald-400" size={32} />
-              <div>
-                <p className="text-blue-200 text-sm">Submitted</p>
-                <p className="text-5xl font-semibold mt-1">{submitted}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
-            <div className="flex items-center gap-4">
-              <Clock className="text-yellow-400" size={32} />
-              <div>
-                <p className="text-blue-200 text-sm">Pending</p>
-                <p className="text-5xl font-semibold mt-1">{membersPending}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
-            <div className="flex items-center gap-4">
-              <Users className="text-blue-400" size={32} />
-              <div>
-                <p className="text-blue-200 text-sm">Compliance</p>
-                <p className="text-5xl font-semibold mt-1">{complianceRate}%</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
-            <div className="flex items-center gap-4">
-              <AlertTriangle className="text-red-400" size={32} />
-              <div>
-                <p className="text-blue-200 text-sm">Open Blockers</p>
-                <p className="text-5xl font-semibold mt-1 text-red-400">{openBlockers}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-10 flex flex-wrap gap-4">
         <input 
             type="week" 
@@ -262,12 +240,60 @@ const Dashboard = () => {
         </select>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
+            <div className="flex items-center gap-4">
+              <CheckCircle className="text-emerald-400" size={32} />
+              <div>
+                <p className="text-blue-200 text-sm">Submitted</p>
+                <p className="text-5xl font-semibold mt-1">{submitted}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
+            <div className="flex items-center gap-4">
+              <Clock className="text-yellow-400" size={32} />
+              <div>
+                <p className="text-blue-200 text-sm">Pending</p>
+                <p className="text-5xl font-semibold mt-1">{membersPending}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
+            <div className="flex items-center gap-4">
+              <Users className="text-blue-400" size={32} />
+              <div>
+                <p className="text-blue-200 text-sm">Compliance Rate</p>
+                <p className="text-5xl font-semibold mt-1">{complianceRate}%</p>
+                <p className="text-xs text-blue-300 mt-1">
+                  {membersWhoSubmitted} of {totalTeamMembers} members
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8">
+            <div className="flex items-center gap-4">
+              <AlertTriangle className="text-red-400" size={32} />
+              <div>
+                <p className="text-blue-200 text-sm">Open Blockers</p>
+                <p className="text-5xl font-semibold mt-1 text-red-400">{openBlockers}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+
         <div className="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-8 mb-8">
           <h3 className="text-xl font-semibold mb-6">Submission Status per Team Member</h3>
-          <div className="overflow-x-auto max-h-[420px] overflow-y-auto">
-            <table className="w-full">
-              <thead className="sticky top-0  z-10">
-                <tr className="border-b border-white/10 text-blue-200 text-sm">
+          
+          <div className="overflow-x-auto max-h-[292px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+            <table className="w-full border-collapse">
+              <thead className="sticky top-0 z-10">
+                <tr className="border-b border-white/10 text-blue-200 text-sm ">
                   <th className="pb-4 text-left">Team Member</th>
                   <th className="pb-4 text-center">Total Reports</th>
                   <th className="pb-4 text-center">Submitted</th>
@@ -277,8 +303,8 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody className="text-gray-200">
-                {memberStatus.map(member => (
-                  <tr key={member._id} className="border-b border-white/10 hover:bg-white/5">
+                {displayedMemberStatus.map(member => (
+                  <tr key={member._id} className="border-b border-white/10 hover:bg-white/5 transition-colors duration-150">
                     <td className="py-5 font-medium">{member.name}</td>
                     <td className="py-5 text-center">{member.total}</td>
                     <td className="py-5 text-center text-emerald-400 font-medium">{member.submitted}</td>
@@ -342,7 +368,7 @@ const Dashboard = () => {
                 <tr className="border-b border-white/10 text-left text-blue-200 text-sm">
                   <th className="pb-4">Member</th>
                   <th className="pb-4">Project</th>
-                  <th className="pb-4">Week</th>
+                  <th className="pb-4">Week End Date</th>
                   <th className="pb-4">Status</th>
                   <th className="pb-4">Blockers</th>
                 </tr>

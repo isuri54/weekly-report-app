@@ -91,9 +91,9 @@ Open http://localhost:5173
 
 <img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/e322d13f-ae9d-4522-bb94-8de8a9ac7951" />
 
-<img width="1917" height="1078" alt="Screenshot 2026-07-09 001224" src="https://github.com/user-attachments/assets/424e6887-32eb-41c4-95e1-c4d65714ba91" />
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/7395c208-40ee-489f-bd1c-739e009ebf0f" />
 
-<img width="1917" height="1078" alt="Screenshot 2026-07-09 001241" src="https://github.com/user-attachments/assets/b13f8d9a-52ac-405e-9ef8-d79f7c065b62" />
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/5dae7384-6971-4640-935e-723b73541140" />
 
 <img width="1917" height="1078" alt="Screenshot 2026-07-09 001259" src="https://github.com/user-attachments/assets/c5cc45bc-b894-4b4e-8759-dbf2cbc7d88b" />
 

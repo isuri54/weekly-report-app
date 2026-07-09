@@ -2,7 +2,7 @@
 
 A full-stack web application built for **Sisenco Digital** internship assignment. Enables team members to submit structured weekly reports and managers to monitor team performance through a comprehensive dashboard.
 
-<img width="1917" height="1078" alt="Screenshot 2026-07-08 233909" src="https://github.com/user-attachments/assets/ebf85c90-d099-437e-85d3-3aef5439dc62" />
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/0b4cfe9d-ca43-4637-a034-d307d749b961" />
 
 
 ## Features
@@ -87,9 +87,9 @@ Open http://localhost:5173
 
 <img width="1917" height="1078" alt="Screenshot 2026-07-09 000949" src="https://github.com/user-attachments/assets/df408d3f-4e3d-4f99-bee6-81933bb49a40" />
 
-<img width="1917" height="1078" alt="Screenshot 2026-07-08 233909" src="https://github.com/user-attachments/assets/0695094d-6f82-41d0-b6b2-8f74a985a60c" />
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/1b054d48-76a1-4a4b-990b-88484e411b1a" />
 
-<img width="1917" height="1078" alt="Screenshot 2026-07-09 001155" src="https://github.com/user-attachments/assets/a216561f-1faa-4ed2-a52a-0f7cc5e2352b" />
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/e322d13f-ae9d-4522-bb94-8de8a9ac7951" />
 
 <img width="1917" height="1078" alt="Screenshot 2026-07-09 001224" src="https://github.com/user-attachments/assets/424e6887-32eb-41c4-95e1-c4d65714ba91" />
 
